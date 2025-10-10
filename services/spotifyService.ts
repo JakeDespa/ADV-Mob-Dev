@@ -27,15 +27,60 @@ const SCOPES = [
   'user-top-read',
 ];
 
+export interface SpotifyImage {
+  url: string;
+  height?: number;
+  width?: number;
+}
+
+export interface SpotifyArtist {
+  id: string;
+  name: string;
+  type: string;
+  uri: string;
+}
+
 export interface SpotifyTrack {
   id: string;
   name: string;
-  artists: { name: string }[];
+  artists: SpotifyArtist[];
   album: {
     name: string;
-    images: { url: string }[];
+    images: SpotifyImage[];
+    release_date?: string;
+    total_tracks?: number;
   };
   duration_ms: number;
+  preview_url: string | null;
+  uri: string;
+  type: string;
+}
+
+export interface SpotifyPlaylistTrack {
+  added_at: string;
+  track: SpotifyTrack;
+}
+
+export interface SpotifyPlaylist {
+  id: string;
+  name: string;
+  description: string;
+  images: SpotifyImage[];
+  owner: {
+    display_name: string;
+    id: string;
+  };
+  tracks: {
+    href: string;
+    items: SpotifyPlaylistTrack[];
+    limit: number;
+    next: string | null;
+    offset: number;
+    previous: string | null;
+    total: number;
+  };
+  type: string;
+  uri: string;
 }
 
 export class SpotifyService {
@@ -86,30 +131,58 @@ export class SpotifyService {
       console.log('Authentication failed or cancelled');
       return false;
     } catch (error) {
-      console.error('Spotify authentication error:', error);
       return false;
     }
   }
 
   // Get user's liked/saved tracks
-  async getLikedTracks(limit = 50): Promise<SpotifyTrack[]> {
-    if (!this.accessToken) throw new Error('Not authenticated');
-
+  // Get user's saved tracks (liked songs)
+  async getSavedTracks(limit: number = 20, offset: number = 0): Promise<SpotifyTrack[]> {
     try {
       const response = await axios.get('https://api.spotify.com/v1/me/tracks', {
-        headers: { Authorization: `Bearer ${this.accessToken}` },
-        params: { limit },
+        headers: this.getAuthHeader(),
+        params: { limit, offset }
       });
-
       return response.data.items.map((item: any) => item.track);
     } catch (error) {
-      console.error('Error fetching liked tracks:', error);
+      console.error('Error fetching saved tracks:', error);
+      throw error;
+    }
+  }
+
+  // Get playlist by ID
+  async getPlaylist(playlistId: string): Promise<SpotifyPlaylist> {
+    try {
+      const response = await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}`, {
+        headers: this.getAuthHeader(),
+        params: {
+          fields: 'id,name,description,images,owner,tracks(items(track(id,name,artists,album,duration_ms,preview_url,uri)))',
+          market: 'from_token'
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching playlist:', error);
+      throw error;
+    }
+  }
+
+  // Get user's playlists
+  async getUserPlaylists(limit: number = 20, offset: number = 0) {
+    try {
+      const response = await axios.get('https://api.spotify.com/v1/me/playlists', {
+        headers: this.getAuthHeader(),
+        params: { limit, offset }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user playlists:', error);
       throw error;
     }
   }
 
   // Search for tracks
-  async searchTracks(query: string, limit = 20): Promise<SpotifyTrack[]> {
+  async searchTracks(query: string, limit: number = 20) {
     if (!this.accessToken) throw new Error('Not authenticated');
 
     try {
