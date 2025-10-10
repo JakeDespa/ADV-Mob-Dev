@@ -10,42 +10,19 @@ import type { SpotifyTrack } from '@/services/spotifyService';
  * 3. Or use URLs from your server/cloud storage
  */
 
-// Option 1: Use local audio files (bundled with app)
-// Uncomment and add your local files
-/*
-const LOCAL_AUDIO_FILES: { [key: string]: any } = {
-  'song1': require('../assets/audio/song1.mp3'),
-  'song2': require('../assets/audio/song2.mp3'),
-  'song3': require('../assets/audio/song3.mp3'),
-  // Add more files...
-};
-*/
-
-// Option 2: Use remote URLs (your server or cloud storage)
-const REMOTE_AUDIO_URLS: { [key: string]: string } = {
-  // Example: Map Spotify track IDs to your audio URLs
-  // 'spotify_track_id': 'https://your-server.com/audio/song.mp3',
-  // Or use a pattern-based approach
-};
-
-// Option 3: Use demo audio (fallback)
-const DEMO_AUDIO_URLS = [
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3',
-  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3',
+// Local audio files from assets/audio folder
+const AUDIO_FILES: any[] = [
+  require("../assets/audio/Alors on danse - Radio Edit.mp3"),
+  require("../assets/audio/Amour plastique.mp3"),
+  require("../assets/audio/baguette.mp3"),
+  require("../assets/audio/danse.mp3"),
+  require("../assets/audio/fete.mp3"),
+  require("../assets/audio/Love Story.mp3"),
+  require("../assets/audio/memes.mp3"),
+  require("../assets/audio/moi.mp3"),
+  require("../assets/audio/Papaoutai.mp3"),
+  require("../assets/audio/Suavemente.mp3"),
+  require("../assets/audio/Tourner Dans Le Vide.mp3"),
 ];
 
 /**
@@ -56,21 +33,8 @@ export function mapSpotifyTrackToSong(
   index: number,
   formatDuration: (ms: number) => string
 ): Song {
-  // Get audio URL - priority: remote URL > local file > demo audio
-  let audioUrl: string | any;
-
-  // Try to get from remote URLs mapping
-  if (REMOTE_AUDIO_URLS[track.id]) {
-    audioUrl = REMOTE_AUDIO_URLS[track.id];
-  }
-  // Try to get from local files
-  // else if (LOCAL_AUDIO_FILES[`song${index + 1}`]) {
-  //   audioUrl = LOCAL_AUDIO_FILES[`song${index + 1}`];
-  // }
-  // Fallback to demo audio
-  else {
-    audioUrl = DEMO_AUDIO_URLS[index % DEMO_AUDIO_URLS.length];
-  }
+  // Get audio URL from audio files
+  const audioUrl = AUDIO_FILES[index % AUDIO_FILES.length];
 
   return {
     id: track.id,
@@ -95,17 +59,36 @@ export function mapSpotifyTracksToSongs(
   );
 }
 
+// Song metadata for your local files
+const SONG_METADATA = [
+  { title: 'Alors on danse', artist: 'Stromae', album: 'Cheese' },
+  { title: 'Amour plastique', artist: 'Videoclub', album: 'Euphories' },
+  { title: 'L\'Amour, Les Baguettes, Paris', artist: 'Stella Jang', album: 'Single' },
+  { title: 'Dernière danse', artist: 'Indila', album: 'Mini World' },
+  { title: 'Ta fête', artist: 'Stromae', album: 'Racine carrée' },
+  { title: 'Love Story', artist: 'Indila', album: 'Mini World' },
+  { title: 'Tous les mêmes', artist: 'Stromae', album: 'Racine carrée' },
+  { title: 'Moi c\'est', artist: 'Camille Lellouche', album: 'Single' },
+  { title: 'Papaoutai', artist: 'Stromae', album: 'Racine carrée' },
+  { title: 'Suavemente', artist: 'Elvis Crespo', album: 'Suavemente' },
+  { title: 'Tourner Dans Le Vide', artist: 'Indila', album: 'Mini World' },
+];
+
 /**
- * Generate demo songs (fallback when not authenticated)
+ * Generate songs using local audio files with real metadata
  */
 export function generateDemoSongs(count: number = 20): Song[] {
-  return new Array(count).fill(0).map((_, i) => ({
-    id: String(i + 1),
-    title: `Demo Song ${i + 1}`,
-    artist: `Artist ${i + 1}`,
-    album: `Album ${i + 1}`,
-    duration: `${Math.floor(Math.random() * 4) + 1}:${String(Math.floor(Math.random() * 59) + 1).padStart(2, '0')}`,
-    audioUrl: DEMO_AUDIO_URLS[i % DEMO_AUDIO_URLS.length],
-    imageUrl: `https://picsum.photos/200/200?random=${i + 1}`,
-  }));
+  return new Array(count).fill(0).map((_, i) => {
+    const index = i % AUDIO_FILES.length;
+    const metadata = SONG_METADATA[index];
+    return {
+      id: String(i + 1),
+      title: metadata.title,
+      artist: metadata.artist,
+      album: metadata.album,
+      duration: `${Math.floor(Math.random() * 4) + 2}:${String(Math.floor(Math.random() * 59) + 1).padStart(2, '0')}`,
+      audioUrl: AUDIO_FILES[index],
+      imageUrl: `https://picsum.photos/200/200?random=${index + 1}`,
+    };
+  });
 }
