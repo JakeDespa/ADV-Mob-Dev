@@ -1,25 +1,20 @@
-import { Image } from 'expo-image';
-import { StyleSheet, ScrollView, TouchableOpacity, View } from 'react-native';
-import { Ionicons, MaterialIcons, FontAwesome5, Feather } from '@expo/vector-icons';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, ReactNode } from 'react';
 
-const PlaylistCard = ({ title, description, imageUrl }: { title: string; description: string; imageUrl: string }) => (
-  <TouchableOpacity style={styles.playlistCard}>
-    <Image source={{ uri: imageUrl }} style={styles.playlistImage} />
-    <ThemedText style={styles.playlistTitle} numberOfLines={1}>{title}</ThemedText>
-    <ThemedText style={styles.playlistDescription} numberOfLines={2}>{description}</ThemedText>
-  </TouchableOpacity>
-);
+interface SpotifyLayoutProps {
+  children: ReactNode;
+  activeTab?: string;
+}
 
-export default function HomeScreen() {
+export default function SpotifyLayout({ children, activeTab = 'home' }: SpotifyLayoutProps) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('home');
+  const [currentTab, setCurrentTab] = useState(activeTab);
 
   const navigateTo = (screen: string, tab: string) => {
-    setActiveTab(tab);
+    setCurrentTab(tab);
     router.push(`/(tabs)/${screen}` as any);
   };
 
@@ -34,25 +29,25 @@ export default function HomeScreen() {
         
         <View style={styles.navSection}>
           <TouchableOpacity 
-            style={[styles.navItem, activeTab === 'home' && styles.navItemActive]}
+            style={[styles.navItem, currentTab === 'home' && styles.navItemActive]}
             onPress={() => navigateTo('index', 'home')}
           >
-            <Ionicons name="home" size={24} color={activeTab === 'home' ? '#fff' : '#b3b3b3'} />
-            <ThemedText style={[styles.navText, { color: activeTab === 'home' ? '#fff' : '#b3b3b3' }]}>Home</ThemedText>
+            <Ionicons name="home" size={24} color={currentTab === 'home' ? '#fff' : '#b3b3b3'} />
+            <ThemedText style={[styles.navText, { color: currentTab === 'home' ? '#fff' : '#b3b3b3' }]}>Home</ThemedText>
           </TouchableOpacity>
           <TouchableOpacity 
-            style={[styles.navItem, activeTab === 'search' && styles.navItemActive]}
+            style={[styles.navItem, currentTab === 'search' && styles.navItemActive]}
             onPress={() => navigateTo('searchRecommendations', 'search')}
           >
-            <Ionicons name="search" size={24} color={activeTab === 'search' ? '#fff' : '#b3b3b3'} />
-            <ThemedText style={[styles.navText, { color: activeTab === 'search' ? '#fff' : '#b3b3b3' }]}>Search</ThemedText>
+            <Ionicons name="search" size={24} color={currentTab === 'search' ? '#fff' : '#b3b3b3'} />
+            <ThemedText style={[styles.navText, { color: currentTab === 'search' ? '#fff' : '#b3b3b3' }]}>Search</ThemedText>
           </TouchableOpacity>
           <TouchableOpacity 
-            style={[styles.navItem, activeTab === 'library' && styles.navItemActive]}
+            style={[styles.navItem, currentTab === 'library' && styles.navItemActive]}
             onPress={() => navigateTo('explore', 'library')}
           >
-            <Ionicons name="library" size={24} color={activeTab === 'library' ? '#fff' : '#b3b3b3'} />
-            <ThemedText style={[styles.navText, { color: activeTab === 'library' ? '#fff' : '#b3b3b3' }]}>Your Library</ThemedText>
+            <Ionicons name="library" size={24} color={currentTab === 'library' ? '#fff' : '#b3b3b3'} />
+            <ThemedText style={[styles.navText, { color: currentTab === 'library' ? '#fff' : '#b3b3b3' }]}>Your Library</ThemedText>
           </TouchableOpacity>
         </View>
 
@@ -82,7 +77,7 @@ export default function HomeScreen() {
       <View style={styles.mainContent}>
         <View style={styles.header}>
           <View style={styles.navButtons}>
-            <TouchableOpacity style={styles.navButton}>
+            <TouchableOpacity style={styles.navButton} onPress={() => router.back()}>
               <Ionicons name="chevron-back" size={24} color="#fff" />
             </TouchableOpacity>
             <TouchableOpacity style={[styles.navButton, { marginLeft: 16 }]}>
@@ -100,50 +95,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        <ScrollView style={styles.contentScroll}>
-          <View style={styles.greetingSection}>
-            <ThemedText style={styles.greeting}>Good afternoon</ThemedText>
-            <View style={styles.greetingButtons}>
-              <TouchableOpacity style={styles.notificationButton}>
-                <Ionicons name="notifications-outline" size={24} color="#fff" />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.settingsButton}>
-                <Ionicons name="settings-outline" size={24} color="#fff" />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <View style={styles.recentlyPlayed}>
-            <ThemedText style={styles.sectionTitle}>Recently played</ThemedText>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
-              {[1, 2, 3, 4, 5].map((item) => (
-                <View key={item} style={styles.recentItem}>
-                  <View style={styles.recentImage} />
-                  <ThemedText style={styles.recentTitle} numberOfLines={1}>Playlist {item}</ThemedText>
-                </View>
-              ))}
-            </ScrollView>
-          </View>
-
-          <View style={styles.madeForYou}>
-            <View style={styles.sectionHeader}>
-              <ThemedText style={styles.sectionTitle}>Made For Jake</ThemedText>
-              <TouchableOpacity>
-                <ThemedText style={styles.seeAll}>Show all</ThemedText>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.playlistGrid}>
-              {[1, 2, 3, 4, 5, 6].map((item) => (
-                <PlaylistCard
-                  key={item}
-                  title={`Daily Mix ${item}`}
-                  description="Made for you based on your listening history"
-                  imageUrl={`https://picsum.photos/200/200?random=${item}`}
-                />
-              ))}
-            </View>
-          </View>
-        </ScrollView>
+        {children}
       </View>
 
       {/* Player Bar */}
@@ -187,7 +139,7 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.volumeControls}>
-          <Feather name="speaker" size={16} color="#b3b3b3" />
+          <Ionicons name="volume-medium" size={16} color="#b3b3b3" />
           <View style={styles.volumeBar}>
             <View style={styles.volumeFill} />
           </View>
@@ -278,7 +230,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 4,
-    backgroundColor: 'linear-gradient(135deg, #450af5, #c4efd9)', 
+    backgroundColor: '#5f27cd',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -331,101 +283,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#282828',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  contentScroll: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 16,
-  },
-  greetingSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  greeting: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  greetingButtons: {
-    flexDirection: 'row',
-  },
-  notificationButton: {
-    marginRight: 16,
-  },
-  settingsButton: {},
-  sectionTitle: {
-    color: '#fff',
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  recentlyPlayed: {
-    marginBottom: 32,
-  },
-  horizontalScroll: {
-    flexDirection: 'row',
-  },
-  recentItem: {
-    width: 120,
-    marginRight: 16,
-  },
-  recentImage: {
-    width: 120,
-    height: 120,
-    backgroundColor: '#282828',
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  recentTitle: {
-    color: '#fff',
-    fontWeight: '600',
-  },
-  madeForYou: {
-    marginBottom: 100, // Extra space for player bar
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  seeAll: {
-    color: '#b3b3b3',
-    fontSize: 12,
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  playlistGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  playlistCard: {
-    width: '48%',
-    marginBottom: 24,
-    backgroundColor: '#181818',
-    borderRadius: 8,
-    padding: 16,
-  },
-  playlistImage: {
-    width: '100%',
-    aspectRatio: 1,
-    borderRadius: 4,
-    marginBottom: 16,
-    backgroundColor: '#282828',
-  },
-  playlistTitle: {
-    color: '#fff',
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  playlistDescription: {
-    color: '#b3b3b3',
-    fontSize: 12,
-    lineHeight: 16,
   },
   playerBar: {
     position: 'absolute',
