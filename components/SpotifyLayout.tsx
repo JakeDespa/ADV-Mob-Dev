@@ -3,6 +3,7 @@ import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { ThemedText } from '@/components/ThemedText';
 import { useRouter } from 'expo-router';
 import { useState, ReactNode } from 'react';
+import { PlayerBar } from '@/components/PlayerBar';
 
 interface SpotifyLayoutProps {
   children: ReactNode;
@@ -99,52 +100,7 @@ export default function SpotifyLayout({ children, activeTab = 'home' }: SpotifyL
       </View>
 
       {/* Player Bar */}
-      <View style={styles.playerBar}>
-        <View style={styles.nowPlaying}>
-          <View style={styles.trackImage} />
-          <View style={styles.trackInfo}>
-            <ThemedText style={styles.trackTitle}>Song Title</ThemedText>
-            <ThemedText style={styles.artistName}>Artist Name</ThemedText>
-          </View>
-          <TouchableOpacity style={styles.likeButton}>
-            <Ionicons name="heart-outline" size={20} color="#b3b3b3" />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.playerControls}>
-          <View style={styles.playerButtons}>
-            <TouchableOpacity>
-              <Ionicons name="shuffle" size={20} color="#1DB954" />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Ionicons name="play-skip-back" size={20} color="#b3b3b3" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.playButton}>
-              <Ionicons name="play" size={24} color="#000" />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Ionicons name="play-skip-forward" size={20} color="#b3b3b3" />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Ionicons name="repeat" size={20} color="#b3b3b3" />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.progressBar}>
-            <ThemedText style={styles.timeText}>0:00</ThemedText>
-            <View style={styles.progressTrack}>
-              <View style={styles.progressFill} />
-            </View>
-            <ThemedText style={styles.timeText}>3:45</ThemedText>
-          </View>
-        </View>
-
-        <View style={styles.volumeControls}>
-          <Ionicons name="volume-medium" size={16} color="#b3b3b3" />
-          <View style={styles.volumeBar}>
-            <View style={styles.volumeFill} />
-          </View>
-        </View>
-      </View>
+      <PlayerBar />
     </View>
   );
 }
@@ -283,109 +239,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#282828',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  playerBar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 80,
-    backgroundColor: '#181818',
-    borderTopWidth: 1,
-    borderTopColor: '#282828',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    justifyContent: 'space-between',
-  },
-  nowPlaying: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    minWidth: 180,
-  },
-  trackImage: {
-    width: 56,
-    height: 56,
-    backgroundColor: '#282828',
-    borderRadius: 4,
-  },
-  trackInfo: {
-    marginLeft: 12,
-    maxWidth: 200,
-  },
-  trackTitle: {
-    color: '#fff',
-    fontSize: 14,
-    marginBottom: 4,
-  },
-  artistName: {
-    color: '#b3b3b3',
-    fontSize: 12,
-  },
-  likeButton: {
-    marginLeft: 16,
-  },
-  playerControls: {
-    flex: 1,
-    maxWidth: 722,
-    alignItems: 'center',
-  },
-  playerButtons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  playButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 16,
-  },
-  progressBar: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  timeText: {
-    color: '#b3b3b3',
-    fontSize: 11,
-    width: 40,
-  },
-  progressTrack: {
-    flex: 1,
-    height: 4,
-    backgroundColor: '#404040',
-    borderRadius: 2,
-    marginHorizontal: 8,
-  },
-  progressFill: {
-    width: '30%',
-    height: '100%',
-    backgroundColor: '#b3b3b3',
-    borderRadius: 2,
-  },
-  volumeControls: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    minWidth: 180,
-  },
-  volumeBar: {
-    width: 100,
-    height: 4,
-    backgroundColor: '#404040',
-    borderRadius: 2,
-    marginLeft: 8,
-  },
-  volumeFill: {
-    width: '70%',
-    height: '100%',
-    backgroundColor: '#b3b3b3',
-    borderRadius: 2,
   },
 });
