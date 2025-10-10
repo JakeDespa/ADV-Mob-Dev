@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function SignIn() {
   const router = useRouter();
@@ -50,7 +50,7 @@ export default function SignIn() {
       </View>
 
       <View style={styles.bottomRow}>
-        <Text style={styles.small}>Don't have an account? </Text>
+  <Text style={styles.small}>Don&apos;t have an account? </Text>
         <TouchableOpacity onPress={() => router.push('/signup')}>
           <Text style={styles.link}>Sign Up</Text>
         </TouchableOpacity>
