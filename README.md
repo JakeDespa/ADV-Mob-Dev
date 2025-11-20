@@ -9,6 +9,6 @@ Week 2 - Act 1 and 2
 <img width="1879" height="897" alt="image" src="https://github.com/user-attachments/assets/041363da-e2dc-4e4b-a125-edc4f725b614" />
 <img width="1863" height="912" alt="image" src="https://github.com/user-attachments/assets/ced920e7-6424-40e3-a94e-72f54d04e7ed" />
 Week 3 - 
-<img width="1863" height="912" alt="image" src="https://github.com/user-attachments/assets/dc2754ba-7c2c-4c27-b306-82ceba2f1506" />
-<img width="1863" height="912" alt="image" src="https://github.com/user-attachments/assets/6afa07c6-33fc-46fc-ab0a-06c7d500aaf1" />
+<img width="897" height="1871" alt="image" src="https://github.com/user-attachments/assets/dc2754ba-7c2c-4c27-b306-82ceba2f1506" />
+<img width="897" height="1871" alt="image" src="https://github.com/user-attachments/assets/6afa07c6-33fc-46fc-ab0a-06c7d500aaf1" />
 
