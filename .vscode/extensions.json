@@ -1,5 +1,1 @@
-{
-    "recommendations": [
-        "codeium.codeium"
-    ]
-}
+{ "recommendations": ["expo.vscode-expo-tools"] }

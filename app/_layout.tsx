@@ -1,32 +1,99 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import "react-native-gesture-handler";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { AudioPlayerProvider } from '@/contexts/AudioPlayerContext';
+import { Ionicons } from "@expo/vector-icons";
+import { Drawer } from "expo-router/drawer";
+import type { ComponentProps } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Provider } from "react-redux";
+import { store } from "../store";
+
+type IoniconName = ComponentProps<typeof Ionicons>["name"];
+
+type DrawerIconProps = {
+  color?: string;
+  size?: number;
+};
+
+const drawerScreens = [
+  { name: "home", title: "Home", icon: "home-outline" },
+  { name: "search", title: "Search", icon: "search-outline" },
+  { name: "library", title: "Your Library", icon: "albums-outline" },
+  { name: "playlists", title: "Playlists", icon: "musical-notes-outline" },
+  { name: "playlist", title: "Playlist Builder", icon: "build-outline" },
+  { name: "profile-creation", title: "Create Profile", icon: "create-outline" },
+  { name: "premium", title: "Premium", icon: "card-outline" },
+  { name: "profile", title: "Profile", icon: "person-outline" },
+  { name: "settings", title: "Settings", icon: "settings-outline" },
+] as const satisfies ReadonlyArray<{
+  name: string;
+  title: string;
+  icon: IoniconName;
+}>;
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
-
   return (
-    <AudioPlayerProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </AudioPlayerProvider>
+    <Provider store={store}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Drawer
+          screenOptions={{
+            headerShown: false,
+            drawerType: "slide",
+            swipeEnabled: true,
+            swipeEdgeWidth: 70,
+            swipeMinDistance: 20,
+            drawerActiveTintColor: "#1DB954",
+            drawerInactiveTintColor: "#d4d4d4",
+            overlayColor: "rgba(0,0,0,0.45)",
+            drawerStyle: {
+              backgroundColor: "#181818",
+              width: 260,
+            },
+            sceneContainerStyle: {
+              backgroundColor: "#000",
+            },
+          }}
+        >
+          <Drawer.Screen
+            name="index"
+            options={{
+              drawerItemStyle: { display: "none" },
+            }}
+          />
+
+          {drawerScreens.map(({ name, title, icon }) => (
+            <Drawer.Screen
+              key={name}
+              name={name}
+              options={{
+                title,
+                drawerLabel: title,
+                drawerIcon: ({ color, size }: DrawerIconProps) => (
+                  <Ionicons name={icon} size={size ?? 20} color={color ?? "#fff"} />
+                ),
+              }}
+            />
+          ))}
+
+          <Drawer.Screen
+            name="login"
+            options={{
+              drawerItemStyle: { display: "none" },
+            }}
+          />
+          <Drawer.Screen
+            name="signup"
+            options={{
+              drawerItemStyle: { display: "none" },
+            }}
+          />
+          <Drawer.Screen
+            name="playlist/[id]"
+            options={{
+              drawerItemStyle: { display: "none" },
+            }}
+          />
+        </Drawer>
+      </GestureHandlerRootView>
+    </Provider>
   );
 }
