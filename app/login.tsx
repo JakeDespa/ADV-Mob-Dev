@@ -10,17 +10,17 @@ import {
   View,
 } from "react-native";
 import { useTheme } from "../hooks/useTheme";
+import { useAuth } from "../hooks/useAuth";
 
 export default function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { colors } = useTheme();
+  const { login, error } = useAuth();
 
   const handleLogin = () => {
-    // Placeholder for auth integration
-    console.log("Logging in", { email, password });
-    router.replace({ pathname: "/home" });
+    login({ email, password });
   };
 
   return (
@@ -58,6 +58,7 @@ export default function LoginScreen() {
             onChangeText={setPassword}
           />
         </View>
+        {error && <Text style={{ color: "red" }}>{error}</Text>}
         <Pressable style={[styles.primaryButton, { backgroundColor: colors.primary }]} onPress={handleLogin}>
           <Text style={[styles.primaryLabel, { color: colors.background }]}>Log in</Text>
         </Pressable>

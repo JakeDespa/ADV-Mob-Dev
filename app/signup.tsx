@@ -15,6 +15,7 @@ import {
   View,
 } from "react-native";
 import { useTheme } from "../hooks/useTheme";
+import { useAuth } from "../hooks/useAuth";
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -22,10 +23,10 @@ export default function SignupScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { colors } = useTheme();
+  const { signup, error } = useAuth();
 
   const handleSignup = () => {
-    // Placeholder for auth integration
-    console.log("Signing up", { name, email, password });
+    signup({ name, email, password });
   };
 
   return (
@@ -87,6 +88,7 @@ export default function SignupScreen() {
                   returnKeyType="done"
                 />
               </View>
+              {error && <Text style={{ color: "red" }}>{error}</Text>}
               <Pressable style={[styles.primaryButton, { backgroundColor: colors.primary }]} onPress={handleSignup}>
                 <Text style={[styles.primaryLabel, { color: colors.background }]}>Sign up free</Text>
               </Pressable>
